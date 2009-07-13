@@ -104,18 +104,44 @@ max_hops = 1500
 #
 max_transfers = 8
 
-# This setting determines whether Simutrans refreshes all the paths as soon as
-# any changes are made, or whether it refreshes only the paths directly (but 
-# not indirectly) affected by any changes instantly, and waits until the end
-# of the next path refresh period (usually two months: see max_rerouting_interval)
-# before refreshing. If this is on, then the network is more responsive, but on
-# larger maps and/or slower computers, it can make the game unresponsive afer
-# every change to schedules/lines. 
+# This setting determines whether Simutrans calculates and refreshes paths 
+# using a distributed or centralised approach. The distributed approach 
+# refreshes only the paths directly (but not indirectly) affected by any 
+# changes instantly, and waits until the end of the next path refresh period
+# (usually two months: see max_rerouting_interval) before refreshing.
+# The centralised approach starts to refresh all paths of any affected goods 
+# category immediately upon change, but does so only gradually to avoid making 
+# the game unresponsive; it also refreshes all paths at the start of each month.
 #
-# 0 = refresh paths at the end of the path # refresh period (default); 
-# 1 = refresh all paths instantly on changes.
+# NOTE: Initial tests suggest that the centralised approach is faster than the
+# distributed approach. 
+#
+# 0 = distributed approach (default); 
+# 1 = centralised approach
+#
+path_searching_approach = 1
 
-instant_path_refresh = 0
+# This setting is Windows specific. It determines whether multimedia timer
+# functions or performance counter functions are used for returning system
+# time in the program. Using multimedia timer functions causes the thread
+# scheduler to switch tasks more frequently, reducing overall system
+# performance. Using performance counter functions will not cause this
+# problem, but the performance counter is not supported by all CPUs and it
+# may not work normally on all windows platforms. If the performance counter is 
+# not supported, setting this option to 1 will have no effect.
+#
+# Some systems have problems with the performance counter, even though they
+# support it, which is why the option is given to disable it. It is recommended
+# that the performance counter is enabled unless there are problems, in which
+# case, it can be disabled to test whether that improves matters. Windows 2000
+# is known to have problems with the performance counter, as is some hardware.
+#
+# NOTE: Never include this option in pakset simuconf.tab
+#
+# 0 = multimedia timer functions (default)
+# 1 = performance counter functions
+#
+system_time_functions = 1
 
 # way builder internal weights (defaults)
 # a higher weight make it more unlikely
@@ -227,7 +253,7 @@ first_beginner = 0
 # disable city growth entirely. 
 city_weight_factor = 100
 
-# Note: the program will generate three groups of passengers: (1) local;
+# The program will generate three groups of passengers: (1) local;
 # (2) midrange; and (3) long distance. The program will look for a town within
 # the specified distance ranges for each class of passenger. If it cannot
 # find such a town within a certain number of tries, it will pick a random town.
@@ -238,7 +264,7 @@ local_passengers_max_distance = 64
 midrange_passengers_min_distance = 0
 midrange_passengers_max_distance = 128
 longdistance_passengers_min_distance = 0
-longdistance_passengers_max_distance = 4096
+longdistance_passengers_max_distance = 16384
 
 # The following are percentage chances. They represent the chances that
 # any passengers generated will try to find a town within each of the three
@@ -258,6 +284,22 @@ passenger_routing_midrange_chance = 33
 # of passengers having 0, 1 or 2 alternative destinations).
 
 max_alternative_destinations = 3
+
+# Passengers have a maximum tolerance level for how long that they will
+# spend travelling. The further that the passengers want to go, the more
+# time that they will be prepared to spend travelling. The number is 
+# expressed in minutes. For each packet of passengers, the number of 
+# minutes travelling time (including waiting time) that they are prepared
+# to tolerate is randomised between the minimum and maximum amount. The
+# local, mid-range and long-distance passenger groups correspond to those
+# above. 
+
+min_local_tolerance = 45
+max_local_tolerance = 60
+min_midrange_tolerance = 60
+max_midrange_tolerance = 180
+min_longdistance_tolerance = 180
+max_longdistance_tolerance = 720
 
 # This is the number of passengers routed at once,
 # to save CPU resources. Decreasing this number will
@@ -371,6 +413,9 @@ bits_per_month = 19
 
 # These values are usually set in the pak files
 # You can adjust all the cost in the game, that are not inside some pak file
+
+# In beginner mode, all revenues are multiplied by a factor (default 1500=1.5)
+beginner_price_factor = 1500
 
 # Starting money of the player. Given in Credit cents (1/100 Cr)
 #starting_money = 30000000
@@ -703,7 +748,7 @@ min_direction_steps_narrowgauge=3
 max_direction_steps_narrowgauge=8
 curve_friction_factor_narrowgauge=0
 
-# These settings determine how long that it takes a train-type vehicle to turn
+# These settings determine how long that it takes a train-type convoy to turn
 # around when it reaches the end of the line. They do not apply to road vehicles
 # or aircraft.
 #
@@ -754,9 +799,6 @@ enforce_weight_limits=1
 
 ################################## Industry settings #################################
 # also pak dependent
-
-# In beginner mode, all revenues are multiplied by a factor (default 1500=1.5)
-beginner_price_factor = 1500
 
 # allow all possible supplier to connect to your factories?
 # This will also affect savegames!
