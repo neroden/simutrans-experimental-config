@@ -121,14 +121,15 @@ max_transfers = 8
 #
 path_searching_approach = 1
 
-# This setting is Windows specific. It determines whether multimedia timer
-# functions or performance counter functions are used for returning system
-# time in the program. Using multimedia timer functions causes the thread
-# scheduler to switch tasks more frequently, reducing overall system
-# performance. Using performance counter functions will not cause this
-# problem, but the performance counter is not supported by all CPUs and it
-# may not work normally on all windows platforms. If the performance counter is 
-# not supported, setting this option to 1 will have no effect.
+# This setting is Windows-GDI specific. It does not apply to Linux, Mac or Windows
+# SDL platforms. It determines whether multimedia timer functions or performance 
+# counter functions are used for returning system time in the program. Using 
+# the multimedia timer functions causes the thread scheduler to switch tasks more
+# frequently, reducing overall system performance. Using performance counter 
+functions will not cause this problem, but the performance counter is not 
+# supported by all CPUs and it may not work normally on all windows platforms.
+# If the performance counter is not supported, setting this option to 1 will have
+# no effect.
 #
 # Some systems have problems with the performance counter, even though they
 # support it, which is why the option is given to disable it. It is recommended
@@ -491,18 +492,15 @@ max_bonus_min_distance = 1024
 max_bonus_multiplier_percent = 300
 
 # For comfort, and the revenues from catering and travelling post offices, the game needs to
-# know the length of a journey. This is done by dividing the number of tiles by the average speed
-# in kilometers per hour of the line or convoy, one tile representing one kilometer. However, this
-# can produce very long journey times: travelling by 'bus at an average of 45kph or so accross a
-# village can produce a journey time of 15-20 minutes, for example. This would make less comfortable, 
-# but higher capacity vehicles for local transport pointless in most cases. 
+# know the length of a journey. In order to do that, the game needs to know how long in kilometres
+# that any given journey is. 
 #
-# To counteract this, the journey_time_multiplier_precent is used. This enables the journey times to
-# be reduced uniformly to match the approximate scale of the map as played. The default is 30, which
-# reduces journey times to a third (which is somewhat more realistic in comparison to the size of
-# and space between towns on a typical Simutrans map). 
+# journey_time_multiplier_percent represents the length of each tile for the purposes of the journey
+# time calculation in tens of meters. So, at a setting of 1, each tile would represent 10 meters. At
+# a setting of 100, each tile would repreesnt 1 kilometre. The default is 20. (In earlier versions,
+# the default was 30, but this was found to be too high). 
 
-journey_time_multiplier_percent = 30
+journey_time_multiplier_percent = 20
 
 # These next settings affect the interaction between comfort and revenue in Simutrans. Comfort only
 # affects passenger traffic, for obvious reasons. Passengers have a certain level of comfort that
