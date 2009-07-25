@@ -252,6 +252,7 @@ first_beginner = 0
 # The city weight factor determines how fast that cities grow. The larger the number,
 # the *slower* that cities will grow. The default is 100. Set the number at zero to 
 # disable city growth entirely. 
+
 city_weight_factor = 100
 
 # The program will generate three groups of passengers: (1) local;
@@ -259,11 +260,13 @@ city_weight_factor = 100
 # the specified distance ranges for each class of passenger. If it cannot
 # find such a town within a certain number of tries, it will pick a random town.
 # The ranges *may* overlap - indeed, this is encouraged.
+#
+# All distances are in kilometres, calibrated by the distance_per_tile setting.
 
 local_passengers_min_distance = 0
-local_passengers_max_distance = 64
+local_passengers_max_distance = 16
 midrange_passengers_min_distance = 0
-midrange_passengers_max_distance = 128
+midrange_passengers_max_distance = 96
 longdistance_passengers_min_distance = 0
 longdistance_passengers_max_distance = 16384
 
@@ -460,7 +463,10 @@ beginner_price_factor = 1500
 
 # These settings calibrate the speed bonus. Note that, with Simutrans-Experimental, unlike
 # Simutrans-Standard, the speed bonus is based on the convoy or line's *average* speed, not
-# the convoy's maximum speed. All distances in these settings are measured in tiles.
+# the convoy's maximum speed. 
+#
+# All distances in these settings are measured in kilometres and calibrated using the
+# distance_per_tile setting.
 #
 # min_bonus_max_distance is the distance below which the speed bonus (or penalty) does not
 # apply. Below this distance, goods pay the same no matter what the average speed.
@@ -486,21 +492,19 @@ beginner_price_factor = 1500
 # the actual distance 500, and the max_bonus_multiplier_percent 200, the speed bonus rating
 # would be increased by half of the multiplier, or 150%.
 
-min_bonus_max_distance = 16
-median_bonus_distance = 128
-max_bonus_min_distance = 1024
+min_bonus_max_distance = 4
+median_bonus_distance = 32
+max_bonus_min_distance = 256
 max_bonus_multiplier_percent = 300
 
-# For comfort, and the revenues from catering and travelling post offices, the game needs to
-# know the length of a journey. In order to do that, the game needs to know how long in kilometres
-# that any given journey is. 
+# distance_per_tile represents the length of each tile in tens of meters. So, at a setting of 1, 
+# each tile would represent 10 meters. At a setting of 100, each tile would repreesnt 1 kilometre. 
+# The default is 25. (In earlier versions, the default was 30). 
 #
-# journey_time_multiplier_percent represents the length of each tile for the purposes of the journey
-# time calculation in tens of meters. So, at a setting of 1, each tile would represent 10 meters. At
-# a setting of 100, each tile would repreesnt 1 kilometre. The default is 20. (In earlier versions,
-# the default was 30, but this was found to be too high). 
+# This setting is used for calculating journey times, revenues, maintenance costs, comfort and
+# catering values. In previous versions, it was known as the "journey_time_multiplier_percent".
 
-journey_time_multiplier_percent = 20
+distance_per_tile = 25
 
 # These next settings affect the interaction between comfort and revenue in Simutrans. Comfort only
 # affects passenger traffic, for obvious reasons. Passengers have a certain level of comfort that
@@ -550,7 +554,7 @@ tolerable_comfort_long=220
 # revenue.
 #
 # max_luxury_bonus_percent is the percentage increase in revenue from the maximum level of luxury specified in
-# max_luxury_bonus_differential. So, if the tolerable comfort level for any given distance was 100, the 
+# max_luxury_bonus_differential. So, if the tolerable comfort level for any given travelling time was 100, the 
 # max_luxury_bonus_differential 50, and the max_luxury_bonus_percent 50, then the revenue would increase up to
 # 50% beyond the normal revenue for additional comfort up to 150, but would not increase further with any increase
 # in comfort beyond 150. 
@@ -814,7 +818,7 @@ electric_promille = 1000
 # with this switch on (default), overcrowded factories will not recieve goods any more
 just_in_time = 1
 
-# Minimum distance between factories
+# Minimum distance between factories (in tiles)
 factory_spacing = 6
 
 # Some factories have a retirement date, after which they are obsolete. After
