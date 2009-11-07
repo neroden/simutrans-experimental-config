@@ -249,11 +249,23 @@ passenger_factor = 10
 # Use beginner mode for new maps
 first_beginner = 0
 
-# The city weight factor determines how fast that cities grow. The larger the number,
-# the *slower* that cities will grow. The default is 100. Set the number at zero to 
-# disable city growth entirely. 
+# Town growth multiplier factors (electricity is not used at the moment)
+# A heigher factor mean faster growth. These are percentage figures.
+passenger_multiplier = 40
+goods_multiplier = 24
 
-city_weight_factor = 100
+# NOTE: These two settings are used in Simutrans-Standard, but not Simutrans-Experimental.
+# In Simutrans-Experimental, the electricity multiplier is set from electricity.tab, and
+# the mail multiplier is set as the remaining percentage after passengers, goods and electricity
+# have been taken into account.
+# mail_multiplier = 20 
+# electricity_multiplier = 0
+
+# Town growth is size dependent. There are three different sizes (<1000, 1000-10000, >10000)
+# the idea is, that area increase by square but growth is linear
+growthfactor_villages = 100
+growthfactor_cities = 200
+growthfactor_capitals = 400
 
 # The program will generate three groups of passengers: (1) local;
 # (2) midrange; and (3) long distance. The program will look for a town within
@@ -298,9 +310,9 @@ max_alternative_destinations = 3
 # local, mid-range and long-distance passenger groups correspond to those
 # above. 
 
-min_local_tolerance = 45
+min_local_tolerance = 30
 max_local_tolerance = 60
-min_midrange_tolerance = 60
+min_midrange_tolerance = 45
 max_midrange_tolerance = 180
 min_longdistance_tolerance = 180
 max_longdistance_tolerance = 720
