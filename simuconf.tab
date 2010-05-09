@@ -242,9 +242,8 @@ show_names = 3
 # savegames with another catchment area will be unloadable
 station_coverage = 2
 
-# passenger generation (default is 16 for Simutrans-Standard, and 10 for 
-# Simutrans-Experimental). The higher the value, the more passengers generated.
-passenger_factor = 10
+# The higher this value, the more passengers generated.
+passenger_factor = 16
 
 # Use beginner mode for new maps
 first_beginner = 0
@@ -263,9 +262,9 @@ goods_multiplier = 24
 
 # Town growth is size dependent. There are three different sizes (<1000, 1000-10000, >10000)
 # the idea is, that area increase by square but growth is linear
-growthfactor_villages = 100
+growthfactor_villages = 400
 growthfactor_cities = 200
-growthfactor_capitals = 400
+growthfactor_capitals = 100
 
 # The program will generate three groups of passengers: (1) local;
 # (2) midrange; and (3) long distance. The program will look for a town within
@@ -310,12 +309,12 @@ max_alternative_destinations = 3
 # local, mid-range and long-distance passenger groups correspond to those
 # above. 
 
-min_local_tolerance = 30
-max_local_tolerance = 60
-min_midrange_tolerance = 45
-max_midrange_tolerance = 180
-min_longdistance_tolerance = 180
-max_longdistance_tolerance = 720
+min_local_tolerance = 35
+max_local_tolerance = 90
+min_midrange_tolerance = 60
+max_midrange_tolerance = 240
+min_longdistance_tolerance = 150
+max_longdistance_tolerance = 2160
 
 # This is the number of passengers routed at once,
 # to save CPU resources. Decreasing this number will
@@ -363,7 +362,7 @@ congestion_density_factor = 16
 # mail is 15. So, with a passenger_max_weight of 2700, mail would wait for 180 
 # minutes before being discarded.
 
-passenger_max_wait = 2700
+passenger_max_wait = 19440
 
 # This is the maximum interval between which routes already calculated will be declared
 # stale, and require recalculation next time that they are called. The connexions from
@@ -390,6 +389,30 @@ just_in_time = 1
 
 # If this setting is set to 1, halts will have different capacities for each type of goods.
 seperate_halt_capacities=1
+
+# Simutrans-Experimental 8.0 introduced a new system of growing cities, which preserved
+# density more accurately. However, this can adversely affect performance. Select
+# quick_city_growth = 1 to use the old, faster system. Note, however, that the old system
+# will result in cities with too high a proportion of high density buildings on map 
+# generation. 
+
+quick_city_growth = 0
+
+# Simutrans-Experimental 8.0 introduced a new feature whereby private car traffic first 
+# checks to see whether its destination is reachable by road before registering a trip
+# (and thus competing with player's transport). On slow systems, this might reduce
+# performance. Disable it by setting: assume_everywhere_connected_by_road = 1. 
+# assume_everywhere_connected_by_road = 0 is the default. 
+
+assume_everywhere_connected_by_road = 0
+
+# Passengers will walk to their destination if it is close enough, rather than use
+# players' transport or private cars. This parameter defines how close that close
+# enough is. It is expressed in hundreds of meters (or tenths of kilometres), so
+# the default setting of 15 means that passnegers will walk to their destination if
+# it is within 1.5km of their origin.
+
+max_walking_distance_km_tenth = 15
 
 
 ################################### Time settings ###################################
@@ -674,8 +697,25 @@ speed_bonus_multiplier_percent = 70
 # there was no increase in the running costs for obsolete vehicles, set the increase
 # percent to 100 and the phase years to 1. 
 
-obsolete_running_cost_increase_percent = 800
-obsolete_running_cost_increase_phase_years = 40
+obsolete_running_cost_increase_percent = 400
+obsolete_running_cost_increase_phase_years = 50
+
+# These settings determine how long after their retirement date that vehicles become
+# obsolete. Obsolete vehicles cost more to maintain than current vehicles. The number
+# is expressed in a number of years. So, for example, if a rail vehicle is no longer 
+# available after January 1900, and default_increase_maintenance_after_years_rail = 30
+# is set, the vehicle will become obsolete in January 1930, and its maintenance cost
+# will begin to increase from then. 
+
+default_increase_maintenance_after_years_road = 15
+default_increase_maintenance_after_years_rail = 30
+default_increase_maintenance_after_years_water = 40
+default_increase_maintenance_after_years_monorail = 30
+default_increase_maintenance_after_years_maglev = 30
+default_increase_maintenance_after_years_tram = 25
+default_increase_maintenance_after_years_narrowgauge = 30
+default_increase_maintenance_after_years_air = 35
+default_increase_maintenance_after_years_other = 30
 
 
 ################################ Vehicle settings ##############################
@@ -809,7 +849,6 @@ global_power_factor_percent=100
 # To revert to the behaviour of Simutrans-Standard, set enforce_weight_limits=0
 
 enforce_weight_limits=1
-
 
 ################################## Industry settings #################################
 # also pak dependent
