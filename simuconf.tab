@@ -248,8 +248,8 @@ passenger_factor = 16
 # Use beginner mode for new maps
 first_beginner = 0
 
-# Town growth multiplier factors (electricity is not used at the moment)
-# A heigher factor mean faster growth. These are percentage figures.
+# Town growth multiplier factors. A higher factor mean faster growth. 
+# These are percentage figures.
 passenger_multiplier = 40
 goods_multiplier = 24
 
@@ -260,8 +260,18 @@ goods_multiplier = 24
 # mail_multiplier = 20 
 # electricity_multiplier = 0
 
-# Town growth is size dependent. There are three different sizes (<1000, 1000-10000, >10000)
-# the idea is, that area increase by square but growth is linear
+# The rate at which towns grow depends on their size. There are three different size categories:
+# "Villages", "Cities" and "Capitals". The following settings define the thresholds (in numbers 
+# of population) above which towns become "Cities" and "Capitals". Anything smaller than 
+# city_threshold_size is a "Village".
+
+city_threshold_size = 1000
+capital_threshold_size = 10000
+
+# These values represent the rate at which towns grow. The raw growth number is *divided*
+# by the growth factors; ergo, the lower the number, the higher the growth. Longer games
+# should have less growth, whereas shorter games do better with more growth.
+
 growthfactor_villages = 400
 growthfactor_cities = 200
 growthfactor_capitals = 100
