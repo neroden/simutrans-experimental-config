@@ -24,7 +24,7 @@
 # load/save the files in the users or the program directory directory? (default: 1 = user directory)
 # ATTENTION!
 # will be only used if this file is located in the program directory at config/simuconf.tab!
-#singleuser_install = 1
+# singleuser_install = 1
 
 # Automatic loading of paksets. If a path to a pakset is specified below, that pakset
 # will be loaded by default when the game starts. If no pakset is specified, the user
@@ -34,7 +34,6 @@
 # and will be overwritten by the settings from simutrans/simuconf.tab in the user directory
 #
 #pak_file_path = pak128.Britain-Ex/
-#pak_file_path = pak192.comic.experimental/
 #pak_file_path = pak/
 #pak_file_path = pak.german/
 #pak_file_path = pak128/
@@ -47,7 +46,9 @@
 
 # compress savegames?
 # "binary" means uncompressed, "zipped" means compressed
-saveformat = zipped
+# other options are "xml" and "xml_zipped"
+# xml detecht more errors of broken savegames but are much larger
+saveformat = bzip2
 
 # autosave every x months (0=off)
 autosave = 12
@@ -58,7 +59,7 @@ fast_forward = 100
 
 # maximum number of position tested during a way search
 # 100000 should be ok even for large maps with ships
-# 10000 is ok for everything else (consumes 16*x Bytes main  memory)
+# 10000 is ok for everything else (consumes 16*x Bytes main memory, no further harm)
 max_route_steps = 1000000
 
 # Max number of steps in goods pathfinding
@@ -82,7 +83,7 @@ max_route_steps = 1000000
 # value for "no route" was higher, around 8000. Using 300 instead almost doubled
 # the value of "no route"
 #
-max_hops = 1500
+max_hops = 2000
 
 # Passengers and goods will change vehicles at most "max_transfer"
 # times to reach their destination.
@@ -102,7 +103,7 @@ max_hops = 1500
 # performance is too slow; use higher settings if passengers or goods are not
 # finding routes where they ought to be.
 #
-max_transfers = 8
+max_transfers = 9
 
 # This setting determines whether Simutrans calculates and refreshes paths 
 # using a distributed or centralised approach. The distributed approach 
@@ -161,14 +162,24 @@ way_leave_road=25
 
 # display (screen/window) width
 # also see readme.txt, -screensize option
-display_width  = 704
+#display_width  = 704
 
 # display (screen/window) height
 # also see readme.txt, -screensize option
-display_height = 560
+#display_height = 560
 
 # show full screen
-fullscreen = 0
+#fullscreen = 0
+
+# maximum size of tool bars (0 = no limit)
+# if more tools than allowed by height,
+# next and prev arrows for scrolling appears
+toolbar_max_width = 0
+toolbar_max_height = 0
+
+# how long is a diagonal (512: faktor 2=1024/512, old way, 724: sqrt(2)=1024/724
+# THIS WILL BE ONLY USED, WHEN THIS FILE IS IN THE pakxyz/config!
+#diagonal_multiplier = 724
 
 # How many frames per second to use? Display may look pretty until 10 or so
 # (depends very much on computer, game complexity and graphics driver)
@@ -185,6 +196,10 @@ window_frame_active = 0
 # Impact on frame time: ~10% (16 cities on a new standard map)
 random_pedestrians = 1
 
+# Do you want to have random pedestrians after pax are reaching this
+# destination? May generate quite a lot. (1=on, 0=off)
+stop_pedestrians = 1
+
 # there are some other grounds (like rocky, lakes etc. )
 # which could be added to the map (default 10)
 # show random objects to break uniformity (every n suited tiles)
@@ -199,7 +214,7 @@ water_animation_ms = 250
 
 # Show info windows for private cars and pedestrians?
 # (1=on, 0=off)
-pedes_and_car_info = 0
+pedes_and_car_info = 1
 
 # After how many month a citycar breaks (and will be forever gone) ...
 # default is ten years
@@ -241,12 +256,12 @@ left_to_right_graphs = 1
 
 #################################### Gameplay settings ##################################
 
-# Size of the station catchment area (default: 2)
+ size of catchment area of a station (default 2)
 # older game size was 3
-# savegames with another catchment area will be unloadable
+# savegames with another catch area will give strange results
 station_coverage = 2
 
-# The higher this value, the more passengers generated.
+# The higher this value, the more passengers generated. (Default: 16)
 passenger_factor = 16
 
 # Use beginner mode for new maps
@@ -280,6 +295,11 @@ growthfactor_villages = 400
 growthfactor_cities = 200
 growthfactor_capitals = 100
 
+# amount of passengers that travel from/to factories or attractions
+# the ramining percentage goes to other cities
+factory_worker_percentage = 15
+tourist_percentage = 7
+
 # The program will generate three groups of passengers: (1) local;
 # (2) midrange; and (3) long distance. The program will look for a town within
 # the specified distance ranges for each class of passenger. If it cannot
@@ -312,7 +332,7 @@ passenger_routing_midrange_chance = 33
 # For example, if the number is set at 2, there will be an equal chance
 # of passengers having 0, 1 or 2 alternative destinations).
 
-max_alternative_destinations = 3
+max_alternative_destinations = 4
 
 # Passengers have a maximum tolerance level for how long that they will
 # spend travelling. The further that the passengers want to go, the more
@@ -323,18 +343,174 @@ max_alternative_destinations = 3
 # local, mid-range and long-distance passenger groups correspond to those
 # above. 
 
-min_local_tolerance = 35
-max_local_tolerance = 90
-min_midrange_tolerance = 60
-max_midrange_tolerance = 240
+min_local_tolerance = 30
+max_local_tolerance = 180
+min_midrange_tolerance = 45
+max_midrange_tolerance = 480
 min_longdistance_tolerance = 150
-max_longdistance_tolerance = 2160
+max_longdistance_tolerance = 4320
 
 # This is the number of passengers routed at once,
 # to save CPU resources. Decreasing this number will
 # make the game run more slowly. Default = 7.
 
 passenger_routing_packet_size = 7
+
+# Settings for calibrating the revenue system
+#
+# These settings calibrate the way in which revenue is calculated in the game. Changing
+# them might make the game easier or harder, or, if they are changed in odd ways, make it
+# behave eratically. Make sure to know what you are doing before changing these values.
+
+# These settings calibrate the speed bonus. Note that, with Simutrans-Experimental, unlike
+# Simutrans-Standard, the speed bonus is based on the convoy or line's *average* speed, not
+# the convoy's maximum speed. 
+#
+# All distances in these settings are measured in kilometres and calibrated using the
+# distance_per_tile setting.
+#
+# min_bonus_max_distance is the distance below which the speed bonus (or penalty) does not
+# apply. Below this distance, goods pay the same no matter what the average speed.
+#
+# median_bonus_distance is the distance at which 100% of the speed bonus/penalty applies. 
+# At anything between min_bonus_max_distance and median_bonus_distance, a scaled proportion
+# of the speed bonus applies. For example, if the min_bonus_max_distance was 10, and the 
+# median_bonus_distance was 110, then, for a journey of 50 tiles, 50% of the speed bonus or
+# penalty would apply. median_bonus_distance is optional: if it is not specified, or set to
+# 0, it will be calculated as the mid point between min_bonus_max_distance and
+# max_bonus_min_distance.
+#
+# max_bonus_min_distance is the distance above which the rate of the speed bonus increases
+# no further. In other words, the rate of the speed bonus (or penalty) keeps increasing with
+# the distance, until it reaches the max_bonus_min_distance, after which it remains steady.
+#
+# max_bonus_multiplier_percent is the percentage of the speed bonus that applies at or above
+# the distance specified in max_bonus_min_distance. So, if the speed bonus rating was 10%, the
+# distance exceeded the max_bonus_min_distance value, and the max_bonus_multiplier_percent was
+# set to 200, the speed bonus rating would effectively be 20% for that journey.
+# Between the median_bonus_distance and the max_bonus_min_distance, a scaled proportion applies.
+# So, if, for example, the median_bonus_distance was 100, the max_bonus_min_distance was 1,100
+# the actual distance 500, and the max_bonus_multiplier_percent 200, the speed bonus rating
+# would be increased by half of the multiplier, or 150%.
+
+min_bonus_max_distance = 4
+median_bonus_distance = 100
+max_bonus_min_distance = 300
+max_bonus_multiplier_percent = 300
+
+# distance_per_tile represents the length of each tile in tens of meters. So, at a setting of 1, 
+# each tile would represent 10 meters. At a setting of 100, each tile would repreesnt 1 kilometre. 
+# The default is 25. (In earlier versions, the default was 30). 
+#
+# This setting is used for calculating journey times, revenues, maintenance costs, comfort and
+# catering values. In previous versions, it was known as the "journey_time_multiplier_percent".
+
+distance_per_tile = 25
+
+# These next settings affect the interaction between comfort and revenue in Simutrans. Comfort only
+# affects passenger traffic, for obvious reasons. Passengers have a certain level of comfort that
+# they will tolerate for certain distances. All comfort ratings are in the range of between 0 and
+# 255. At the tolerable level, the revnue is unaffected. At above the tolerable level, a luxury
+# bonus is applied. At below the tolerable level, a discomfort penalty is applied. The values can
+# be set to anything, but, to reflect real life, it is suggested that the discomfort penalty is
+# significantly higher than the luxury bonus. 
+#
+# tolerable_comfort_short is the tolerable comfort rating of a vehicle (0 - 255) for a journey of no
+# more than tolerable_comfort_short_minutes.
+#
+# tolerable_comfort_median_short is the tolerable comfort rating of a vehicle for a journey of no more
+# than tolerable_comfort_median_short minutes.
+#
+# tolerable_comfort_median_median is the tolerable comfort rating of a vehicle for a journey of no more
+# than tolerable_comfort_median_median minutes.
+#
+# tolerable_comfort_median_long is the tolerable comfort rating of a vehicle for a journey of no more
+# than tolerable_comfort_median_long minutes.
+#
+# tolerable_comfort_long is the tolerable comfort rating of a vehicle for a journey of at least
+# tolerable_comfort_long minutes.
+#
+# For any journeys of a time between any of the values, a scaled proportion is taken. 
+# 
+# Note that (versions 7.2 onwards), the impact of comfort on revenue decreases with journey time.
+# It is at its maximum level down to tolerable_comfort_median_long_minutes, after which it gradually
+# reduces to 20% of its maximum at tolerable_comfort_short_minutes, and does not decrease further
+# thereafter. 
+
+tolerable_comfort_short_minutes=2
+tolerable_comfort_short=15
+
+tolerable_comfort_median_short_minutes=30
+tolerable_comfort_median_short=60
+
+#Two hours
+tolerable_comfort_median_median_minutes=120
+tolerable_comfort_median_median=100
+
+#Five hours
+tolerable_comfort_median_long_minutes=300
+tolerable_comfort_median_long=160
+
+#12 hours
+tolerable_comfort_long_minutes=720
+tolerable_comfort_long=220
+
+# max_luxury_bonus_differential is the maximum number of comfort rating points above the tolerable level
+# that affects the luxury bonus. Anything beyond that, and further added luxury makes no difference to the
+# revenue.
+#
+# max_luxury_bonus_percent is the percentage increase in revenue from the maximum level of luxury specified in
+# max_luxury_bonus_differential. So, if the tolerable comfort level for any given travelling time was 100, the 
+# max_luxury_bonus_differential 50, and the max_luxury_bonus_percent 50, then the revenue would increase up to
+# 50% beyond the normal revenue for additional comfort up to 150, but would not increase further with any increase
+# in comfort beyond 150. 
+
+max_luxury_bonus_differential=55
+max_luxury_bonus_percent=45
+
+# The discomfort penalty works in exactly the same way as the comfort bonus. max_discomfort_penalty_percent is the
+# percentage decrease in revenue from the maximum level of discomfort specified in max_discomfort_penalty_differential. 
+
+max_discomfort_penalty_differential=200
+max_discomfort_penalty_percent=95
+
+# These settings control the revenue that can be earned from catering and travelling post offices. Note that catering
+# vehicles on a convoy also increase the comfort by a small amount, which has an indirect effect on the revenue. These
+# settings do not affect that: these settings affect the revenue earned from the catering itself: i.e., by selling food
+# and drink. 
+#
+# catering_min_minutes is the shortest journey time that will provide any catering revenue. Anything below that, and 
+# passengers will not bother to buy any food or drink at all. 
+#
+# catering_level1_minutes is the journey time at which any convoy with a catering level of 1 or higher will earn, per
+# passenger, the number of Simu-cents (1/100th of a Simucredit) specified in catering_level1_max_revenue. 
+# 
+# The same applies for each subsequent catering level: in other words, higher catering levels only earn more than lower
+# catering levels on journeys of at least the catering_levelX_minutes (where X is the catering level in question).
+#
+# Between each level, the a scaled proportion is applied. So, for example, if catering_min_minutes is 100, 
+# catering_level1_minutes is 200, and the actual journey time is 150 minutes, then, any convoy with a catering level 
+# of at least 1 will earn 50% of the amount specified in catering_level1_max_revenue per passenger. 
+
+catering_min_minutes=60
+catering_level1_minutes=90
+catering_level1_max_revenue=150
+catering_level2_minutes=120
+catering_level2_max_revenue=250
+catering_level3_minutes=150
+catering_level3_max_revenue=350
+catering_level4_minutes=240
+catering_level4_max_revenue=400
+catering_level5_minutes=300
+catering_level5_max_revenue=475
+
+# Travelling post office revenue is simpler than catering revenue. For every journey that mail makes in a convoy containing
+# a travelling post office vehicle (that is, a mail carrying vehicle with a catering level above zero) where the journey time
+# exceeds that specified in tpo_min_minutes, the trip will earn the amount specified in tpo_revenue, multiplied by the number
+# of mail bags carried, in addition to the ordinary revenue.
+
+tpo_min_minutes=120
+tpo_revenue=300
 
 # These settings relate to private car use. See /config/privatecar.tab for
 # the configuration of private car ownership for different years.
@@ -425,7 +601,7 @@ assume_everywhere_connected_by_road = 0
 # away from each other that the cities are built. This is introduced in Simutrans-Experimental
 # 9.0. It replaces Simutrans-Standard's setting of "minimum_city_distance".
 
-city_isolation_factor = 1
+city_isolation_factor = 32
 
 # Passengers will walk to their destination if it is close enough, rather than use
 # players' transport or private cars. This parameter defines how close that close
@@ -458,7 +634,7 @@ use_timeline = 2
 #
 # other recommended vaule for 64 is 1956
 #
-starting_year = 1930
+starting_year = 1900
 
 # Starting month of the game for people who want to start in summer (default 1=January)
 starting_month = 1
@@ -516,157 +692,6 @@ beginner_price_factor = 1500
 #cost_remove_tree=100
 #cost_multiply_remove_haus=1000
 #cost_multiply_remove_field=5000
-
-# Settings for calibrating the revenue system
-#
-# These settings calibrate the way in which revenue is calculated in the game. Changing
-# them might make the game easier or harder, or, if they are changed in odd ways, make it
-# behave eratically. Make sure to know what you are doing before changing these values.
-
-# These settings calibrate the speed bonus. Note that, with Simutrans-Experimental, unlike
-# Simutrans-Standard, the speed bonus is based on the convoy or line's *average* speed, not
-# the convoy's maximum speed. 
-#
-# All distances in these settings are measured in kilometres and calibrated using the
-# distance_per_tile setting.
-#
-# min_bonus_max_distance is the distance below which the speed bonus (or penalty) does not
-# apply. Below this distance, goods pay the same no matter what the average speed.
-#
-# median_bonus_distance is the distance at which 100% of the speed bonus/penalty applies. 
-# At anything between min_bonus_max_distance and median_bonus_distance, a scaled proportion
-# of the speed bonus applies. For example, if the min_bonus_max_distance was 10, and the 
-# median_bonus_distance was 110, then, for a journey of 50 tiles, 50% of the speed bonus or
-# penalty would apply. median_bonus_distance is optional: if it is not specified, or set to
-# 0, it will be calculated as the mid point between min_bonus_max_distance and
-# max_bonus_min_distance.
-#
-# max_bonus_min_distance is the distance above which the rate of the speed bonus increases
-# no further. In other words, the rate of the speed bonus (or penalty) keeps increasing with
-# the distance, until it reaches the max_bonus_min_distance, after which it remains steady.
-#
-# max_bonus_multiplier_percent is the percentage of the speed bonus that applies at or above
-# the distance specified in max_bonus_min_distance. So, if the speed bonus rating was 10%, the
-# distance exceeded the max_bonus_min_distance value, and the max_bonus_multiplier_percent was
-# set to 200, the speed bonus rating would effectively be 20% for that journey.
-# Between the median_bonus_distance and the max_bonus_min_distance, a scaled proportion applies.
-# So, if, for example, the median_bonus_distance was 100, the max_bonus_min_distance was 1,100
-# the actual distance 500, and the max_bonus_multiplier_percent 200, the speed bonus rating
-# would be increased by half of the multiplier, or 150%.
-
-min_bonus_max_distance = 4
-median_bonus_distance = 32
-max_bonus_min_distance = 256
-max_bonus_multiplier_percent = 300
-
-# distance_per_tile represents the length of each tile in tens of meters. So, at a setting of 1, 
-# each tile would represent 10 meters. At a setting of 100, each tile would repreesnt 1 kilometre. 
-# The default is 25. (In earlier versions, the default was 30). 
-#
-# This setting is used for calculating journey times, revenues, maintenance costs, comfort and
-# catering values. In previous versions, it was known as the "journey_time_multiplier_percent".
-
-distance_per_tile = 25
-
-# These next settings affect the interaction between comfort and revenue in Simutrans. Comfort only
-# affects passenger traffic, for obvious reasons. Passengers have a certain level of comfort that
-# they will tolerate for certain distances. All comfort ratings are in the range of between 0 and
-# 255. At the tolerable level, the revnue is unaffected. At above the tolerable level, a luxury
-# bonus is applied. At below the tolerable level, a discomfort penalty is applied. The values can
-# be set to anything, but, to reflect real life, it is suggested that the discomfort penalty is
-# significantly higher than the luxury bonus. 
-#
-# tolerable_comfort_short is the tolerable comfort rating of a vehicle (0 - 255) for a journey of no
-# more than tolerable_comfort_short_minutes.
-#
-# tolerable_comfort_median_short is the tolerable comfort rating of a vehicle for a journey of no more
-# than tolerable_comfort_median_short minutes.
-#
-# tolerable_comfort_median_median is the tolerable comfort rating of a vehicle for a journey of no more
-# than tolerable_comfort_median_median minutes.
-#
-# tolerable_comfort_median_long is the tolerable comfort rating of a vehicle for a journey of no more
-# than tolerable_comfort_median_long minutes.
-#
-# tolerable_comfort_long is the tolerable comfort rating of a vehicle for a journey of at least
-# tolerable_comfort_long minutes.
-#
-# For any journeys of a time between any of the values, a scaled proportion is taken. 
-
-tolerable_comfort_short_minutes=2
-tolerable_comfort_short=15
-
-tolerable_comfort_median_short_minutes=30
-tolerable_comfort_median_short=60
-
-#Two hours
-tolerable_comfort_median_median_minutes=120
-tolerable_comfort_median_median=100
-
-#Five hours
-tolerable_comfort_median_long_minutes=300
-tolerable_comfort_median_long=160
-
-#12 hours
-tolerable_comfort_long_minutes=720
-tolerable_comfort_long=220
-
-# max_luxury_bonus_differential is the maximum number of comfort rating points above the tolerable level
-# that affects the luxury bonus. Anything beyond that, and further added luxury makes no difference to the
-# revenue.
-#
-# max_luxury_bonus_percent is the percentage increase in revenue from the maximum level of luxury specified in
-# max_luxury_bonus_differential. So, if the tolerable comfort level for any given travelling time was 100, the 
-# max_luxury_bonus_differential 50, and the max_luxury_bonus_percent 50, then the revenue would increase up to
-# 50% beyond the normal revenue for additional comfort up to 150, but would not increase further with any increase
-# in comfort beyond 150. 
-
-max_luxury_bonus_differential=55
-max_luxury_bonus_percent=40
-
-# The discomfort penalty works in exactly the same way as the comfort bonus. max_discomfort_penalty_percent is the
-# percentage decrease in revenue from the maximum level of discomfort specified in max_discomfort_penalty_differential. 
-
-max_discomfort_penalty_differential=200
-max_discomfort_penalty_percent=95
-
-# These settings control the revenue that can be earned from catering and travelling post offices. Note that catering
-# vehicles on a convoy also increase the comfort by a small amount, which has an indirect effect on the revenue. These
-# settings do not affect that: these settings affect the revenue earned from the catering itself: i.e., by selling food
-# and drink. 
-#
-# catering_min_minutes is the shortest journey time that will provide any catering revenue. Anything below that, and 
-# passengers will not bother to buy any food or drink at all. 
-#
-# catering_level1_minutes is the journey time at which any convoy with a catering level of 1 or higher will earn, per
-# passenger, the number of Simu-cents (1/100th of a Simucredit) specified in catering_level1_max_revenue. 
-# 
-# The same applies for each subsequent catering level: in other words, higher catering levels only earn more than lower
-# catering levels on journeys of at least the catering_levelX_minutes (where X is the catering level in question).
-#
-# Between each level, the a scaled proportion is applied. So, for example, if catering_min_minutes is 100, 
-# catering_level1_minutes is 200, and the actual journey time is 150 minutes, then, any convoy with a catering level 
-# of at least 1 will earn 50% of the amount specified in catering_level1_max_revenue per passenger. 
-
-catering_min_minutes=60
-catering_level1_minutes=90
-catering_level1_max_revenue=150
-catering_level2_minutes=120
-catering_level2_max_revenue=250
-catering_level3_minutes=150
-catering_level3_max_revenue=350
-catering_level4_minutes=240
-catering_level4_max_revenue=400
-catering_level5_minutes=300
-catering_level5_max_revenue=475
-
-# Travelling post office revenue is simpler than catering revenue. For every journey that mail makes in a convoy containing
-# a travelling post office vehicle (that is, a mail carrying vehicle with a catering level above zero) where the journey time
-# exceeds that specified in tpo_min_minutes, the trip will earn the amount specified in tpo_revenue, multiplied by the number
-# of mail bags carried, in addition to the ordinary revenue.
-
-tpo_min_minutes=120
-tpo_revenue=300
 
 # Insolvency and debt settings
 #
@@ -904,6 +929,36 @@ factory_spacing = 6
 # of years stipulated below, factories have a 100% chance of closing down. The
 # chance increases the closer to this value that factories get.
 max_years_obsolete = 30
+
+################################# Tree settings #################################
+#  please be careful in changing them, I spent lot of time finding optimals.
+#  those values have impact on no. of spawned trees -> memory consumption
+#
+# Number of trees on square 2 - minimal usable, 3 good, 4 very nice looking
+max_no_of_trees_on_square = 3
+
+# Base forest size - minimal size of forest - map independent
+forest_base_size = 36
+
+# Map size divisor - smaller it is the larger are individual forests
+forest_map_size_divisor = 38
+
+# Forest count divisor - smaller it is, the more forest are generated
+forest_count_divisor = 16
+
+# Determins how dense are spare trees going to be planted (works inversly)
+forest_inverse_spare_tree_density = 400
+
+# climate with trees entirely (1: water, 2:desert, 4:tropic, 8:mediterran, 16:temperate, 32:tundra, 64:rocky, 128:arctic)
+# zero (default) means no climate with at least one tree per tile
+tree_climates = 4
+
+# climates with no trees at all (desert and arctic at the moment)
+no_tree_climates = 130
+
+# if set, no trees will be created at all (save about 30% memory and
+# the season change will be much smoother on small machines)
+#no_tree = 0
 
 ################################### Network settings ##############################
 #
